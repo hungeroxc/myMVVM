@@ -6,16 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="./js/mvvm.js"></script>
+    <script src="./js/compile.js"></script>
 </head>
 <body>
-    <div id="app">
-        {{ message }}
-    </div>
+    <div id="app">{{ message }}</div>
     <script>
         let app = new MVVM({
             el: '#app',
             data: {
-                message: '123'
+                message: '123',
+                msg: '886'
             }
         })
     </script>

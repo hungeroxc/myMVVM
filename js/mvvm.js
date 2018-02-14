@@ -1,45 +1,27 @@
 
 class MVVM {
-    constructor(options = {}){
-        this.options = options
-        this._data = this.options.data
-        this.observerable(this._data)
-        this.setProxy()
+    constructor(options){
+        this.$options = options || {}
+        let data = this._data = this.$options.data
+        let me = this
+
+        Object.keys(data).forEach(key => {
+            me._proxyData(key)
+        })
+        this.$compile = new Compile(options.el || document.body, this)
     }
-    observerable(value){
-        Object.keys(value).forEach(key => 
-            this.defineReactive(value, key, value[key])
-        )
-    }
-    defineReactive(obj, key, value){
-        let _this = this
-        Object.defineProperty(obj, key, {
-            configurable: true,
+    _proxyData(key){
+        let me = this
+        Object.defineProperty(me, key, {
+            configurable: false,
             enumerable: true,
             get(){
-                return _this._data[key]
+                return me._data[key]
             },
             set(newVal){
-                
+                me._data[key] = newVal
             }
         })
     }
-    setProxy(){
-        let _this = this
-        Object.keys(this._data).forEach(e => {
-            Object.defineProperty(_this, e, {
-                configurable: false,
-                enumerable: true,
-                get(){
-                    console.log(667)
-                    return _this._data[e]
-                },
-                set(newVal){
-                    _this._data[e] = newVale
-                }
-            })
-        })
-    }
 }
-
 
