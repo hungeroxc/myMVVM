@@ -9,13 +9,15 @@
     <script src="./js/compile.js"></script>
 </head>
 <body>
-    <div id="app">{{ message }}</div>
+    <div id="app">123{{ message.msg}}123{{msg}}</div>
     <script>
         let app = new MVVM({
             el: '#app',
             data: {
-                message: '123',
-                msg: '886'
+                message: {
+                    msg: 'msg'
+                },
+                msg: '123'
             }
         })
     </script>

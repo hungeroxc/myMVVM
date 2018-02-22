@@ -1,25 +1,19 @@
 
 class MVVM {
     constructor(options){
-        this.$options = options || {}
-        let data = this._data = this.$options.data
-        let me = this
-
-        Object.keys(data).forEach(key => {
-            me._proxyData(key)
-        })
-        this.$compile = new Compile(options.el || document.body, this)
+        this.options = options || {}
+        this.data = this.options.data
+        Object.keys(this.data).forEach(key => this._proxy(key))
+        this.compile = new Compile(options.el, this)
     }
-    _proxyData(key){
-        let me = this
-        Object.defineProperty(me, key, {
-            configurable: false,
-            enumerable: true,
+    _proxy(key){
+        let _this = this
+        Object.defineProperty(_this, key, {
             get(){
-                return me._data[key]
+                return _this.data[key]
             },
             set(newVal){
-                me._data[key] = newVal
+                _this.data[key] = newVal
             }
         })
     }
