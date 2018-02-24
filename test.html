@@ -8,12 +8,9 @@
     <script src="./dist/app.js"></script>
 </head>
 <body>
-    <div id="app">
-        {{message.msg}}
-        <div>{{msg}}</div>
-    </div>
+    <div id="app">{{message.msg}}886{{msg}}{{message.msg}}</div>
     <script>
-        let app = new MVVM({
+        let vm = new MVVM({
             el: '#app',
             data: {
                 message: {
