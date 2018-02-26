@@ -1,5 +1,4 @@
 import Compiler from './Compiler'
-import observer from './Observer'
 
 class MVVM {
     constructor(options){
@@ -10,7 +9,6 @@ class MVVM {
             this.setProxy(key)
         })
 
-        observer(this.data)
         
         
         new Compiler(this.el, this)

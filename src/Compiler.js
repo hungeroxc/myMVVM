@@ -1,4 +1,5 @@
-import Watcher from './Watcher'
+
+
 
 class Compiler {
     constructor(el, vm){
@@ -67,23 +68,48 @@ class Compiler {
      *    然后在父节点上进行替换
     */
     compileTextNode(textNode){
-        let parent = textNode.parentNode,
+        let tokens = this.compileText(textNode.textContent),
             fragment = document.createDocumentFragment(),
-            text = textNode.textContent,
-            reg = /\{\{(.*?)\}\}/g,
-            leftReg = /\{\{/,
-            rightReg = /\}\}/,
-            match = text.match(reg)
-        match.forEach(e => {
-            let tag = e.replace(leftReg, '').replace(rightReg, '').trim()
-            text = text.replace(e, () => {
-                let str = directive.getVMData(this.vm, tag);
-                return str
-            })
+            parent = textNode.parentNode
+        tokens.forEach(token => {
+            let el
+            if(token.tag){
+                el = document.createTextNode("")
+                directive.text(el, this.vm, token.value)
+            }else{
+                el = document.createTextNode(token.value)
+            }
+            fragment.appendChild(el)
         })
-        let el = document.createTextNode(text)
-        fragment.appendChild(el)
         parent.replaceChild(fragment, textNode)
+    }
+    compileText(text){
+        let mustacheRe = /\{\{(.*?)\}\}/g,
+            lastIndex = 0,
+            tokens = [],
+            match, index, value;
+        
+        while(match = mustacheRe.exec(text)){
+            index = match.index
+            if(index > lastIndex){
+                tokens.push({
+                    value: text.slice(lastIndex, index)
+                })
+            }
+
+            value = match[1]
+            tokens.push({
+                value,
+                tag: true
+            })
+            lastIndex = index + match[0].length
+        }
+        if(lastIndex < text.length){
+            tokens.push({
+                value: text.slice(lastIndex)
+            })
+        }
+        return tokens
     }
     /** 
      * @param {node}: 元素节点
@@ -119,6 +145,9 @@ const directive = {
     model(node, vm, exp, type){
         this.bind(node, vm, exp, type)
     },
+    text(node, vm, exp, type){
+        this.bind(node, vm, exp, 'text')
+    },
     /** 
      * @param {node}: 元素节点
      * @param {vm}: MVVM实例：用于拿data对象中的数据
@@ -132,9 +161,8 @@ const directive = {
     */
     bind(node, vm, exp, type){
         let newVal = this.getVMData(vm, exp),
-            update = updater[type]
-        update(node, exp, newVal)
-        
+            updaterView = updater[type]
+        updaterView(node, exp, newVal)
     },
     /** 
      * @param {vm}: MVVM的实例
@@ -146,11 +174,11 @@ const directive = {
     */
     getVMData(vm, tag){
         let tagArr = tag.split('.'),
-            value = vm
+            val = vm
         tagArr.forEach(key => {
-            value = value[key]
+            val = val[key]
         })
-        return value
+        return val
     }
 }
 
@@ -162,6 +190,9 @@ const updater = {
         node.addEventListener('input', e => {
             updater.setVMData(vm, exp, e.target.value)
         })
+    },
+    text(node, value, newVal){
+        node.textContent = newVal
     },
     setVMData(vm, exp, newVal){
         let expArr = exp.split('.'),
