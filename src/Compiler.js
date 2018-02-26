@@ -37,9 +37,9 @@ class Compiler {
      * ①：获取假节点的所有子节点集合;
      * ②：遍历子节点集合并对节点的类型进行判断: 1 => 元素节点 3 => 文本节点
      *    然后针对不同类型的节点选择性编译
-     * ③(文本节点): 设定RegExp，如果文本节点中的元素带有mustache语法的双花
+     * ③-1(文本节点): 设定RegExp，如果文本节点中的元素带有mustache语法的双花
      *             括号，则进行文本编译;
-     * ③(元素节点): 执行元素节点编译;
+     * ③-2(元素节点): 执行元素节点编译;
     */
     compileElement(fragment){
         let children = fragment.childNodes,
@@ -85,6 +85,14 @@ class Compiler {
         fragment.appendChild(el)
         parent.replaceChild(fragment, textNode)
     }
+    /** 
+     * @param {node}: 元素节点
+     * 
+     * @desc:
+     * ①：获取该元素节点的子节点和它的属性;
+     * ②：遍历属性列表然后判断属性中是否存在指令病过滤出该指令，
+     *    代入指令集中进行处理
+    */
     compileNodeElement(node){
         let children = node.childNodes,
             attrs = node.attributes
@@ -106,10 +114,22 @@ class Compiler {
 
 }
 
+/* 指令集: 包含model, for等常用指令 */
 const directive = {
     model(node, vm, value, type){
         this.bind(node, vm, value, type)
     },
+    /** 
+     * @param {node}: 元素节点
+     * @param {vm}: MVVM实例：用于拿data对象中的数据
+     * @param {value}: 指令绑定的data中的键
+     * @param {type}: 指令类型
+     * 
+     * 
+     * @desc:
+     * ①：通过value获取到data中相应的值；
+     * ②：执行更新器updater中对应指令的函数进行更新       
+    */
     bind(node, vm, value, type){
         let val = this.getVMData(vm, value),
             update = updater[type]
@@ -134,6 +154,8 @@ const directive = {
     }
 }
 
+
+/* 更新器 */
 const updater = {
     model(node, value){
         node.value = value
