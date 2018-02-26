@@ -58,14 +58,12 @@ class Compiler {
      * @param {textNode}: 文本节点
      * 
      * @desc:
-     * ①：获取到文字节点的父元素和文本，创建一个假元素备用，
-     *    创建过滤左和右双花括号的正则，获取得到文本中的所有符合mustache语法的文本
-     *    数组match;
-     * ②：遍历match并用正则过滤其中元素的左右双花括号得到需要查找的键,
-     *    获得在data对象中对应该键的值getVMData
-     *    把文本中的所有mustache语法进行替换，并赋值给text
-     * ③：用text创建一个文本节点，将该文本节点作为子节点放入假节点中
-     *    然后在父节点上进行替换
+     * ①：创建标的tokens(标的是一个数组，内部为文本切割后的结果)，假元素，获取文本节点父元素；
+     * ②：遍历tokens，若不是tag则以此创建一个文本节点，
+     *    如为tag则创建一个空的文本节点并放入指令集中
+     *    依据tag进行填充；
+     * ③：将文本节点放入假节点中并替换原先的文本节点
+     *    
     */
     compileTextNode(textNode){
         let tokens = this.compileText(textNode.textContent),
@@ -83,6 +81,17 @@ class Compiler {
         })
         parent.replaceChild(fragment, textNode)
     }
+    /** 
+     * @param {text}: 文本节点内文字
+     * 
+     * @desc: 
+     * ①：主要内容为对文本进行切割，切割格式如下:
+     *    普通文本|mustache语法文本|普通文本
+     * ②：切割完毕后符合mustche语法的文本则为tag；
+     * ③：将所有切割后的文本放入tokens中
+     * 
+     * @return {tokens}
+    */
     compileText(text){
         let mustacheRe = /\{\{(.*?)\}\}/g,
             lastIndex = 0,
