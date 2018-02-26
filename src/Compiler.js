@@ -1,4 +1,4 @@
-
+import Watcher from './Watcher'
 
 class Compiler {
     constructor(el, vm){
@@ -116,8 +116,8 @@ class Compiler {
 
 /* 指令集: 包含model, for等常用指令 */
 const directive = {
-    model(node, vm, value, type){
-        this.bind(node, vm, value, type)
+    model(node, vm, exp, type){
+        this.bind(node, vm, exp, type)
     },
     /** 
      * @param {node}: 元素节点
@@ -130,10 +130,10 @@ const directive = {
      * ①：通过value获取到data中相应的值；
      * ②：执行更新器updater中对应指令的函数进行更新       
     */
-    bind(node, vm, value, type){
-        let val = this.getVMData(vm, value),
+    bind(node, vm, exp, type){
+        let newVal = this.getVMData(vm, exp),
             update = updater[type]
-        update(node, val)
+        update(node, exp, newVal)
         
     },
     /** 
@@ -157,8 +157,22 @@ const directive = {
 
 /* 更新器 */
 const updater = {
-    model(node, value){
-        node.value = value
+    model(node, exp, newVal){
+        node.value = newVal
+        node.addEventListener('input', e => {
+            updater.setVMData(vm, exp, e.target.value)
+        })
+    },
+    setVMData(vm, exp, newVal){
+        let expArr = exp.split('.'),
+            val = vm.data
+        expArr.forEach((key, i) => {
+            if(i === expArr.length - 1){
+                val[key] = newVal
+            }else{
+                val = val[key]
+            }
+        })
     }
 }
 

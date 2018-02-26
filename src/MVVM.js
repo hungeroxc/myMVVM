@@ -1,4 +1,5 @@
 import Compiler from './Compiler'
+import observer from './Observer'
 
 class MVVM {
     constructor(options){
@@ -9,6 +10,9 @@ class MVVM {
             this.setProxy(key)
         })
 
+        observer(this.data)
+        
+        
         new Compiler(this.el, this)
     }
     /** 
@@ -18,14 +22,15 @@ class MVVM {
      * 达成目标：vm.data.xxx => vm.xxx
     */
     setProxy(key){
+        let _this = this
         Object.defineProperty(this, key, {
             configurable: false,
             enumerable: true,
             get(){
-                return this.data[key]
+                return _this.data[key]
             },
             set(newVal){
-                this.data[key] = newVal
+                _this.data[key] = newVal
             }
         })
     }
