@@ -193,7 +193,7 @@ const directive = {
 
 
 /* 更新器 */
-const updater = {
+const updater = { 
     model(node, exp, newVal){
         node.value = newVal
         node.addEventListener('input', e => {
