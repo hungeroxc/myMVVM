@@ -77,7 +77,7 @@ class Compiler {
         match.forEach(e => {
             let tag = e.replace(leftReg, '').replace(rightReg, '').trim()
             text = text.replace(e, () => {
-                let str = this.getVMData(this.vm, tag);
+                let str = directive.getVMData(this.vm, tag);
                 return str
             })
         })
@@ -86,12 +86,36 @@ class Compiler {
         parent.replaceChild(fragment, textNode)
     }
     compileNodeElement(node){
-        let children = node.childNodes
+        let children = node.childNodes,
+            attrs = node.attributes
+        Array.from(attrs).forEach(attr => {
+            let name = attr.name
+            if(this.isDirective(name)){
+                let value = attr.value,
+                    type = name.substring(2)
+                directive[type](node, this.vm, value, type)
+            }
+        })
         if(children && children.length > 0){
             this.compileElement(node)
         }
-        
     }
+    isDirective(name){
+        return name.indexOf('v-') > -1
+    }
+
+}
+
+const directive = {
+    model(node, vm, value, type){
+        this.bind(node, vm, value, type)
+    },
+    bind(node, vm, value, type){
+        let val = this.getVMData(vm, value),
+            update = updater[type]
+        update(node, val)
+        
+    },
     /** 
      * @param {vm}: MVVM的实例
      * @param {tag}: 过滤得出的键名
@@ -110,12 +134,10 @@ class Compiler {
     }
 }
 
-const directive = {
-
-}
-
 const updater = {
-
+    model(node, value){
+        node.value = value
+    }
 }
 
 
