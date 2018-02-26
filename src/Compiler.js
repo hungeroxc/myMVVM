@@ -86,7 +86,11 @@ class Compiler {
         parent.replaceChild(fragment, textNode)
     }
     compileNodeElement(node){
-
+        let children = node.childNodes
+        if(children && children.length > 0){
+            this.compileElement(node)
+        }
+        
     }
     /** 
      * @param {vm}: MVVM的实例
@@ -105,6 +109,15 @@ class Compiler {
         return value
     }
 }
+
+const directive = {
+
+}
+
+const updater = {
+
+}
+
 
 
 export default Compiler
