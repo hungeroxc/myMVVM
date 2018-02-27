@@ -1,4 +1,4 @@
-
+import Watcher from './Watcher'
 
 
 class Compiler {
@@ -166,12 +166,17 @@ const directive = {
      * 
      * @desc:
      * ①：通过value获取到data中相应的值；
-     * ②：执行更新器updater中对应指令的函数进行更新       
+     * ②：执行更新器updater中对应指令的函数进行更新；
+     * ③：新建一个watcher实例对该属性进行监听，
+     *    传入当前vm，该属性名称，以及触发更新时的回调函数;       
     */
     bind(node, vm, exp, type){
         let newVal = this.getVMData(vm, exp),
             updaterView = updater[type]
         updaterView(node, exp, newVal)
+        new Watcher(vm, exp, (newVal, oldVal) => {
+            updaterView(node, exp, newVal)
+        })
     },
     /** 
      * @param {vm}: MVVM的实例
@@ -196,6 +201,10 @@ const directive = {
 const updater = { 
     model(node, exp, newVal){
         node.value = newVal
+        /** 
+         * @desc:
+         * 当输入新内容时对vm.data的相应属性旧值进行设置
+        */
         node.addEventListener('input', e => {
             updater.setVMData(vm, exp, e.target.value)
         })
@@ -203,6 +212,9 @@ const updater = {
     text(node, value, newVal){
         node.textContent = newVal
     },
+    /** 
+     * 该处触发相应属性的setter
+    */
     setVMData(vm, exp, newVal){
         let expArr = exp.split('.'),
             val = vm.data
