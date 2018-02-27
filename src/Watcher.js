@@ -56,7 +56,7 @@ class Watcher {
             this.depIds[dep.id] = dep
             dep.addSub(this)
         }
-    }
+    } 
     /** 
      * @desc:
      * ①：获取该属性新的值，然后赋值给旧值，再对旧值进行保存；
