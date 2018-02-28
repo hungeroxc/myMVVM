@@ -7,3 +7,5 @@
 - cd myMVVM
 - npm install 
 - 打开test.html
+
+### 项目博客[Vue中的MVVM](https://www.jianshu.com/p/b6381ce85494)
