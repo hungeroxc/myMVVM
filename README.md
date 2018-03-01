@@ -8,4 +8,4 @@
 - npm install 
 - 打开test.html
 
-### 项目博客[Vue中的MVVM](https://www.jianshu.com/p/b6381ce85494)
+### 项目博客[Vue中的MVVM](https://www.jianshu.com/p/2d5c1eccc571)
