@@ -187,7 +187,7 @@ const directive = {
      * ②：要注意message.msg这种情况
     */
     getVMData(vm, tag){
-        let tagArr = tag.split('.'),
+        let tagArr = tag.trim().split('.'),
             val = vm
         tagArr.forEach(key => {
             val = val[key]

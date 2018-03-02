@@ -9,19 +9,19 @@
 </head>
 <body>
     <div id="app">
-        <div>{{msg}}</div>
-        <div>{{message.msg}}</div>
-        <input type="text" v-model="msg">
-        <input type="text" v-model="message.msg">
+        <div>{{name}}</div>
+        <input type="text" v-model="name">
     </div>
     <script>
         let vm = new MVVM({
             el: '#app',
             data: {
-                message: {
-                    msg: 'msg'
-                },
                 msg: '123'
+            },
+            computed: {
+                name(){
+                    return this.msg+'大春'
+                }
             }
         })
     </script>
