@@ -6,6 +6,7 @@ class MVVM {
         this.data = options.data
         this.computed = options.computed
         this.watch = options.watch
+        this.methods = options.methods
         
         this.initComputed(this.computed)
 

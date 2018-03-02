@@ -132,11 +132,18 @@ class Compiler {
         let children = node.childNodes,
             attrs = node.attributes
         Array.from(attrs).forEach(attr => {
-            let name = attr.name
+            let name = attr.name,
+                reg = /:/
             if(this.isDirective(name)){
                 let value = attr.value,
-                    type = name.substring(2)
-                directive[type](node, this.vm, value, type)
+                    type = name.substring(2),
+                    index, eventType
+                if(reg.test(type)){
+                    index = reg.exec(type).index,
+                    eventType = type.substring(index + 1),
+                    type = type.substring(0, index)
+                }
+                directive[type](node, this.vm, value, type, eventType)
             }
         })
         if(children && children.length > 0){
@@ -152,10 +159,14 @@ class Compiler {
 /* 指令集: 包含model, for等常用指令 */
 const directive = {
     model(node, vm, exp, type){
-        this.bind(node, vm, exp, type)
+        this.bindData(node, vm, exp, type)
     },
     text(node, vm, exp, type){
-        this.bind(node, vm, exp, 'text')
+        this.bindData(node, vm, exp, 'text')
+    },
+    on(node, vm, exp, type, event){
+        console.log(arguments)
+        node.addEventListener(event, vm.methods[exp].bind(vm))
     },
     /** 
      * @param {node}: 元素节点
@@ -170,7 +181,7 @@ const directive = {
      * ③：新建一个watcher实例对该属性进行监听，
      *    传入当前vm，该属性名称，以及触发更新时的回调函数;       
     */
-    bind(node, vm, exp, type){
+    bindData(node, vm, exp, type){
         let newVal = this.getVMData(vm, exp),
             updaterView = updater[type]
         updaterView(node, exp, newVal)

@@ -9,9 +9,7 @@
 </head>
 <body>
     <div id="app">
-        <div>{{msg}}</div>
-        <input type="text" v-model="msg">
-        <button v-bind="print"></button>
+        <button v-on:click="print">123</button>
     </div>
     <script>
         let vm = new MVVM({
@@ -21,7 +19,7 @@
             },
             methods: {
                 print(){
-                    this.name
+                    this.msg = 886
                 }
             },
             watch: {
