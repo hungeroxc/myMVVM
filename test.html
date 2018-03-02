@@ -9,15 +9,17 @@
 </head>
 <body>
     <div id="app">
-        <div style="color: red" v-show="isShow">{{msg}}</div>
-        <button v-on:click="print">123</button>
+        <div v-show="isShow">{{msg}}</div>
+        <input type="text" v-model="msg">
+        <button v-on:click="print">按钮</button>
     </div>
     <script>
         let vm = new MVVM({
             el: '#app',
             data: {
                 msg: '123',
-                isShow: false
+                isShow: true,
+                arr: [1,2,3]
             },
             methods: {
                 print(){
