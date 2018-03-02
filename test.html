@@ -9,17 +9,19 @@
 </head>
 <body>
     <div id="app">
+        <div style="color: red" v-show="isShow">{{msg}}</div>
         <button v-on:click="print">123</button>
     </div>
     <script>
         let vm = new MVVM({
             el: '#app',
             data: {
-                msg: '123'
+                msg: '123',
+                isShow: false
             },
             methods: {
                 print(){
-                    this.msg = 886
+                    this.isShow = !this.isShow
                 }
             },
             watch: {

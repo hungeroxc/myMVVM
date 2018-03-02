@@ -6,6 +6,9 @@ class Compiler {
         this.el = document.querySelector(el)
         this.vm = vm
 
+
+        this.cache = []
+
         /** 真实节点转为假节点 */
         this.fragment = this.nodeToFragment(this.el)
         /** 对假节点进行编译*/
@@ -158,6 +161,7 @@ class Compiler {
 
 /* 指令集: 包含model, for等常用指令 */
 const directive = {
+    
     model(node, vm, exp, type){
         this.bindData(node, vm, exp, type)
     },
@@ -165,8 +169,10 @@ const directive = {
         this.bindData(node, vm, exp, 'text')
     },
     on(node, vm, exp, type, event){
-        console.log(arguments)
         node.addEventListener(event, vm.methods[exp].bind(vm))
+    },
+    show(node, vm, exp, type){
+        this.bindData(node, vm, exp, type)
     },
     /** 
      * @param {node}: 元素节点
@@ -181,13 +187,13 @@ const directive = {
      * ③：新建一个watcher实例对该属性进行监听，
      *    传入当前vm，该属性名称，以及触发更新时的回调函数;       
     */
-    bindData(node, vm, exp, type){
+    bindData(node, vm, exp, type, compiler){
         let newVal = this.getVMData(vm, exp),
             updaterView = updater[type]
-        updaterView(node, exp, newVal)
+        updaterView(node, exp, newVal, compiler)
 
         new Watcher(vm, exp, newVal => {
-            updaterView(node, exp, newVal)
+            updaterView(node, exp, newVal, compiler)
             Object.keys(vm.watch).forEach(key => {
                 if(key === exp){
                     vm.watch[key](newVal)
@@ -226,8 +232,15 @@ const updater = {
             updater.setVMData(vm, exp, e.target.value)
         })
     },
-    text(node, value, newVal){
+    text(node, exp, newVal){
         node.textContent = newVal
+    },
+    show(node, exp, newVal){
+        if(!newVal){
+            node.style.display = 'none'
+        }else{
+            node.style.display = 'block'
+        }
     },
     /** 
      * 该处触发相应属性的setter
