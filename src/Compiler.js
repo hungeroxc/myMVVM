@@ -174,8 +174,14 @@ const directive = {
         let newVal = this.getVMData(vm, exp),
             updaterView = updater[type]
         updaterView(node, exp, newVal)
+
         new Watcher(vm, exp, (newVal, oldVal) => {
             updaterView(node, exp, newVal)
+            Object.keys(vm.watch).forEach(key => {
+                if(key === exp){
+                    vm.watch[key](newVal)
+                }
+            })
         })
     },
     /** 

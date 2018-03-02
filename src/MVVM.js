@@ -5,15 +5,17 @@ class MVVM {
         this.el = options.el
         this.data = options.data
         this.computed = options.computed
-
+        this.watch = options.watch
+        
         this.initComputed(this.computed)
+
 
         Object.keys(this.data).forEach(key => {
             this.setProxy(key)
         })
         
 
-        observer(this.data)
+        observer(this.data, this)
         
         new Compiler(this.el, this)
     }

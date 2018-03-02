@@ -9,14 +9,19 @@
 </head>
 <body>
     <div id="app">
-        <div>{{name}}</div>
-        <input type="text" v-model="name">
+        <!-- <div>{{msg}}</div> -->
+        <input type="text" v-model="msg">
     </div>
     <script>
         let vm = new MVVM({
             el: '#app',
             data: {
                 msg: '123'
+            },
+            watch: {
+                msg(newVal){
+                    console.log(newVal)
+                }
             },
             computed: {
                 name(){

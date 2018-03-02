@@ -6,23 +6,24 @@ import Dep from './Dep'
  * @desc: 
  * 判定data是否存在并且为对象，如果是则进行观测
 */
-function observer(data){
+function observer(data, vm){
     if(!data || typeof data !== 'object'){
         return
     }
-    return new Observer(data)
+    return new Observer(data, vm)
 }
 
 /* 观察器 */
 
 class Observer {
-    constructor(data){
+    constructor(data, vm){
         this.data = data
+        this.vm = vm
         this.walk(data)
     }
     walk(data){
         Object.keys(data).forEach(key => {
-            this.bindDescriptor(data, key, data[key])
+            this.bindDescriptor(data, key, data[key], this.vm)
         })
     }
     /** 
@@ -38,7 +39,7 @@ class Observer {
      *    则放入一个新观测器中进行观测;
      * ③：new一个Dep实例，在属性的getter和setter中备用
     */
-    bindDescriptor(data, key, value){
+    bindDescriptor(data, key, value, vm){
         let childObj = observer(value),
             dep = new Dep();
         Object.defineProperty(data, key, {
