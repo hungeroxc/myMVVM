@@ -9,6 +9,8 @@ class Watcher {
         this.depIds = {}
         // 保存旧值
         this.oldVal = this.get()
+        
+        
     }
     /** 
      * @desc:

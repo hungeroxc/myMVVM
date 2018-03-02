@@ -9,14 +9,20 @@
 </head>
 <body>
     <div id="app">
-        <!-- <div>{{msg}}</div> -->
+        <div>{{msg}}</div>
         <input type="text" v-model="msg">
+        <button v-bind="print"></button>
     </div>
     <script>
         let vm = new MVVM({
             el: '#app',
             data: {
                 msg: '123'
+            },
+            methods: {
+                print(){
+                    this.name
+                }
             },
             watch: {
                 msg(newVal){
@@ -25,7 +31,7 @@
             },
             computed: {
                 name(){
-                    return this.msg+'大春'
+                    return '大春'
                 }
             }
         })

@@ -175,7 +175,7 @@ const directive = {
             updaterView = updater[type]
         updaterView(node, exp, newVal)
 
-        new Watcher(vm, exp, (newVal, oldVal) => {
+        new Watcher(vm, exp, newVal => {
             updaterView(node, exp, newVal)
             Object.keys(vm.watch).forEach(key => {
                 if(key === exp){

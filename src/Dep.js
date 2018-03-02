@@ -15,7 +15,10 @@ class Dep {
      * 将当前watcher添加进subs中
     */
     addSub(sub){
-        this.subs.push(sub)
+        if(!this.subs.length > 0){
+            this.subs.push(sub)
+        }
+        
     }
     removeSub(sub){
         let index = this.subs.indexOf(sub)
