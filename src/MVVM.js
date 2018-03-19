@@ -8,12 +8,11 @@ class MVVM {
         this.watch = options.watch
         this.methods = options.methods
         
-        this.initComputed(this.computed)
-
 
         Object.keys(this.data).forEach(key => {
             this.setProxy(key)
         })
+
         
 
         observer(this.data, this)
@@ -37,19 +36,6 @@ class MVVM {
             set(newVal){
                 _this.data[key] = newVal
             }
-        })
-    }
-    /** 
-     * @param {computed}: 函数集合
-     * 
-     * @desc:
-     * ①执行computed函数得出值；
-     * ②将值放入data中;
-    */
-    initComputed(computed){
-        Object.keys(computed).forEach(key => {
-            let value = computed[key].call(this.data)
-            this.data[key] = value
         })
     }
 }

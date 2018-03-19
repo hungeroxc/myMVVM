@@ -14,6 +14,7 @@
         <button v-on:click="print">按钮</button>
     </div>
     <script>
+        console.log(MVVM)
         let vm = new MVVM({
             el: '#app',
             data: {
@@ -29,11 +30,6 @@
             watch: {
                 msg(newVal){
                     console.log(newVal)
-                }
-            },
-            computed: {
-                name(){
-                    return '大春'
                 }
             }
         })
